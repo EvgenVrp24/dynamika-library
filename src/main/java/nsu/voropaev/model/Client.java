@@ -1,15 +1,20 @@
 package nsu.voropaev.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "client")
+@Data
+@NoArgsConstructor
 public class Client {
 
     @Id
@@ -21,23 +26,14 @@ public class Client {
     @Column(name = "full_name")
     private String fullName;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "Дата рождения обязательна")
-    @Past(message = "Некорректная дата рождения")
+    @Past(message = "Дата рождения должна быть в прошлом")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
-
-    public Client() {}
 
     public Client(String fullName, LocalDate dateOfBirth) {
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
-    public LocalDate getDateOfBirth() { return dateOfBirth; }
-    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
 }

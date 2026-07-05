@@ -1,12 +1,16 @@
 package nsu.voropaev.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "book")
+@Data
+@NoArgsConstructor
 public class Book {
 
     @Id
@@ -22,24 +26,20 @@ public class Book {
     private String author;
 
     @NotBlank(message = "ISBN обязателен")
-    //@Pattern(regexp = "^(?:\\d{9}[\\dX]|\\d{13})$", message = "Неверный формат ISBN")
-    @Column(unique = true, length = 20)
+    @Size(min = 10, max = 13, message = "ISBN должен содержать от 10 до 13 символов после очистки")
+    @Column(unique = true, length = 13)
     private String isbn;
-
-    public Book() {}
 
     public Book(String name, String author, String isbn) {
         this.name = name;
         this.author = author;
-        this.isbn = isbn;
+        this.setIsbn(isbn);
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getAuthor() { return author; }
-    public void setAuthor(String author) { this.author = author; }
-    public String getIsbn() { return isbn; }
-    public void setIsbn(String isbn) { this.isbn = isbn; }
+    public void setIsbn(String isbn) {
+        if (isbn != null) {
+            isbn = isbn.replaceAll("[^0-9Xx]", "").toUpperCase();
+        }
+        this.isbn = isbn;
+    }
 }
